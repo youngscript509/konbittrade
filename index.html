@@ -1,0 +1,219 @@
+<!DOCTYPE html><html lang="fr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0b1d3a">
+<link rel="manifest" href="/assets/manifest-DBEIzCG8.json"><link rel="apple-touch-icon" href="/assets/icon-192-DZyQWEhC.png"><title>KonbitTrade</title>
+<style>:root{--bg:#0b1d3a;--card:#13294d;--tx:#e8eefc;--mu:#8fa3c7;--ok:#22c55e;--ko:#ef4444;--ac:#38bdf8}*{box-sizing:border-box}body{background:var(--bg);color:var(--tx);max-width:760px;margin:auto;padding:10px;font:14px system-ui,sans-serif}h1{margin:6px 0;font-size:18px}.c{background:var(--card);border-radius:12px;margin:10px 0;padding:12px}.c h2{color:var(--ac);margin:0 0 8px;font-size:13px}.g{grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px;display:grid}label{color:var(--mu);font-size:11px;display:block}input,select{width:100%;color:var(--tx);background:#0b1d3a;border:1px solid #2b4570;border-radius:8px;padding:7px}button{background:var(--ac);color:#04121f;border:0;border-radius:10px;padding:10px 14px;font-weight:700}button.r{background:var(--ko);color:#fff}button.s{color:#fff;background:#2b4570;padding:6px 10px}button:disabled{opacity:.5;cursor:not-allowed}.hint{color:var(--mu);margin-top:8px;display:block}[hidden]{display:none!important}.actions{flex-wrap:wrap;gap:8px;margin-top:10px;display:flex}.account-card{border:1px solid #2b4570}.account-card h2{font-size:15px}.account-card p{line-height:1.6}.account-card button{cursor:pointer}.account-card :focus-visible{outline:2px solid var(--ac);outline-offset:3px}#identity-status{min-height:22px;margin-bottom:0}#connection-history{color:var(--mu);padding-left:20px;font-size:12px;line-height:1.8}.st{text-align:center;grid-template-columns:repeat(4,1fr);gap:6px;display:grid}.st b{font-size:16px;display:block}.st span{color:var(--mu);font-size:10px}#log{background:#071326;border-radius:8px;height:180px;padding:8px;font:12px monospace;overflow:auto}.w{color:var(--ok)}.l{color:var(--ko)}.rule{grid-template-columns:repeat(5,1fr) 30px;gap:4px;margin-bottom:4px;display:grid}</style>  <script type="module" crossorigin src="/assets/index-C62Q0UGk.js"></script>
+</head><body>
+<h1>⚡ KonbitTrade <small id="acc" style="color:var(--mu)"></small></h1>
+<section class="c account-card" aria-labelledby="identity-title">
+<h2 id="identity-title">Mon espace KonbitTrade</h2>
+<p class="hint">Un compte KonbitTrade confirmé est obligatoire pour utiliser l’application. Connectez-vous ou créez votre compte pour accéder au trading. Ce compte est distinct de votre connexion Deriv.</p>
+<noscript><p>Activez JavaScript pour vous connecter. Le trading reste verrouillé sans connexion KonbitTrade.</p></noscript>
+<form id="identity-form" hidden>
+<div class="g">
+<div><label for="identity-email">Adresse e-mail</label><input id="identity-email" type="email" autocomplete="username" required maxlength="254"></div>
+<div><label for="identity-password">Mot de passe</label><input id="identity-password" type="password" autocomplete="current-password" required maxlength="128"></div>
+</div>
+<div class="actions"><button type="submit">Se connecter</button><button type="button" class="s" id="identity-signup">Créer un compte</button><button type="button" class="s" id="identity-forgot">Mot de passe oublié</button></div>
+<small class="hint">Pour créer un compte, choisissez au moins 10 caractères. Un e-mail de confirmation est envoyé.</small>
+</form>
+<form id="password-form" hidden>
+<label for="new-password">Nouveau mot de passe</label><input id="new-password" type="password" autocomplete="new-password" minlength="10" maxlength="128" required>
+<div class="actions"><button type="submit">Enregistrer le mot de passe</button></div>
+</form>
+<div id="profile-panel" hidden>
+<p>Connecté : <strong id="profile-email"></strong></p>
+<label for="profile-name">Nom affiché</label><input id="profile-name" autocomplete="nickname" maxlength="100">
+<div class="actions"><button id="profile-save" type="button" disabled>Enregistrer mon profil et mes réglages</button><button class="s" id="profile-reload" type="button">Recharger mes réglages</button><button class="s" id="identity-logout" type="button">Se déconnecter</button></div>
+<small class="hint">La sauvegarde inclut l’App ID, les paramètres et les règles ci-dessous. Le PAT Deriv n’est jamais enregistré. Le rechargement remplace les modifications non enregistrées.</small>
+<details><summary>Mes dernières connexions KonbitTrade</summary><ul id="connection-history"></ul></details>
+</div>
+<p id="identity-status" role="status" aria-live="polite">Chargement de votre espace…</p>
+</section>
+<fieldset id="trading-panel" hidden disabled style="border:0;padding:0;margin:0;min-width:0" aria-label="Trading réservé aux membres KonbitTrade">
+<div class="c"><h2>1. Autorisation</h2><div class="g">
+<div><label for="token">Personal Access Token (PAT)</label><input id="token" type="password" autocomplete="off" spellcheck="false"></div>
+<div><label for="appid">App ID (nouvelle API Deriv)</label><input id="appid" placeholder="Votre App ID" autocomplete="off"></div>
+<div><label for="account">Compte Options</label><select id="account" disabled><option value="">Chargez vos comptes</option></select></div>
+<div style="align-self:end"><button id="bc">Charger les comptes</button></div></div>
+<small class="hint">Utilisez un PAT avec la permission trade et l’App ID associé à votre application sur le nouveau portail Deriv. Sélectionnez ensuite un compte démo ou réel. Le PAT n’est pas enregistré.</small></div>
+
+<div class="c"><h2>2. Paramètres</h2><div class="g">
+<div><label>Marché</label><select id="symbol"><option value="1HZ10V">Volatility 10 (1s)</option><option value="R_10">Volatility 10</option><option value="1HZ25V">Volatility 25 (1s)</option><option value="1HZ75V">Volatility 75 (1s)</option></select></div>
+<div><label>Type</label><select id="dir"><option value="DIGITUNDER">Under</option><option value="DIGITOVER">Over</option></select></div>
+<div><label>Stake initial</label><input id="stake0" type="number" value="5"></div>
+<div><label>Win Stake</label><input id="winStake" type="number" value="5"></div>
+<div><label>Multiplicateur après perte</label><input id="mult" type="number" step="0.1" value="2.2"></div>
+<div><label>Take Profit ($)</label><input id="tp" type="number" value="30"></div>
+<div><label>Stop Loss ($)</label><input id="sl" type="number" value="500"></div>
+<div><label>Sessions max (runs)</label><input id="runs" type="number" value="150"></div>
+<div><label>Barrière Loss=0</label><input id="b0" type="number" min="0" max="9" value="7"></div>
+<div><label>Barrière Loss≥1</label><input id="b1" type="number" min="0" max="9" value="5"></div>
+<div><label>Barrière Loss≥2</label><input id="b2" type="number" min="0" max="9" value="5"></div>
+<div><label>Barrière Loss≥4</label><input id="b3" type="number" min="0" max="9" value="5"></div></div></div>
+
+<div class="c"><h2>3. Règles après N sessions</h2>
+<small style="color:var(--mu)">Si sessions ≥ N et P/L total (≥ ou ≤) X → modifier le paramètre. Chaque règle s'applique une seule fois.</small>
+<div id="rules" style="margin-top:8px"></div><button class="s" id="ar">+ Règle</button></div>
+
+<div class="c"><div class="st"><div><b id="sS">0</b><span>Sessions</span></div><div><b id="sP">0</b><span>P/L $</span></div><div><b id="sL">0</b><span>Loss streak</span></div><div><b id="sK">5</b><span>Stake</span></div></div>
+<div style="display:flex;gap:8px;margin-top:10px"><button id="go" style="flex:1">▶ Démarrer</button><button id="stop" class="r" style="flex:1">■ Stop</button></div></div>
+<div class="c"><div id="log"></div></div>
+</fieldset>
+<script>
+const $=i=>document.getElementById(i),F=['appid','symbol','dir','stake0','winStake','mult','tp','sl','runs','b0','b1','b2','b3'];
+let ws,cur='USD',run=false,S={},accounts=[],connected=false,heartbeat,contractActive=false,accessAllowed=false,accessRevision=0;
+let rules=[];
+localStorage.removeItem('an_token');
+F.forEach(f=>$(f).addEventListener('change',()=>window.dispatchEvent(new Event('preferenceschange'))));
+const log=(t,c='')=>{const entry=document.createElement('div');entry.className=c;entry.textContent=`${new Date().toLocaleTimeString()} ${t}`;$('log').prepend(entry)};
+const sel=(o,v)=>o.map(x=>`<option ${x==v?'selected':''}>${x}</option>`).join('');
+function drawR(){$('rules').innerHTML=rules.map((r,i)=>`<div class="rule"><input type="number" value="${r.n}" onchange="rules[${i}].n=+this.value;sv()" title="N sessions"><select onchange="rules[${i}].op=this.value;sv()">${sel(['≥','≤'],r.op)}</select><input type="number" value="${r.x}" onchange="rules[${i}].x=+this.value;sv()" title="P/L"><select onchange="rules[${i}].a=this.value;sv()">${sel(['winStake','stake0','mult','tp','sl','stop'],r.a)}</select><input type="number" value="${r.y}" onchange="rules[${i}].y=+this.value;sv()" title="valeur"><button class="s" onclick="rules.splice(${i},1);sv();drawR()">×</button></div>`).join('')}
+const sv=()=>window.dispatchEvent(new Event('preferenceschange'));
+$('ar').onclick=()=>{if(!accessAllowed)return;rules.push({n:10,op:'≥',x:10,a:'winStake',y:10});sv();drawR()};drawR();
+let id=0;const pending=new Map();
+const send=async request=>{
+const revision=accessRevision;
+if(!accessAllowed)throw new Error('Connectez-vous à votre compte KonbitTrade.');
+if(request.buy&&(!await window.konbittrade.authorize()||!run||!accessAllowed||revision!==accessRevision))throw new Error('Achat annulé : session KonbitTrade inactive ou arrêt demandé.');
+return new Promise((resolve,reject)=>{
+if(!ws||ws.readyState!==WebSocket.OPEN)return reject(new Error('Connexion Deriv indisponible.'));
+const requestId=++id;
+const timeout=setTimeout(()=>{pending.delete(requestId);reject(new Error('Délai de réponse Deriv dépassé. Vérifiez vos contrats avant de redémarrer.'))},15000);
+pending.set(requestId,{resolve,reject,timeout});
+try{ws.send(JSON.stringify({...request,req_id:requestId}))}catch{clearTimeout(timeout);pending.delete(requestId);reject(new Error('Envoi à Deriv impossible.'))}
+})};
+async function rest(path,method='GET'){
+const revision=accessRevision;
+if(!accessAllowed||!await window.konbittrade.authorize())throw new Error('Connectez-vous à votre compte KonbitTrade.');
+if(revision!==accessRevision)throw new Error('Session KonbitTrade fermée.');
+const response=await fetch('/api/deriv',{
+method:'POST',headers:{'Content-Type':'application/json'},
+body:JSON.stringify({path,method,token:$('token').value.trim(),appId:$('appid').value.trim()}),
+cache:'no-store',credentials:'same-origin',redirect:'error',signal:AbortSignal.timeout(15000)
+});
+if(revision!==accessRevision)throw new Error('Session KonbitTrade fermée.');
+if(response.status===401){window.dispatchEvent(new Event('sessionexpired'));throw new Error('Session KonbitTrade expirée. Reconnectez-vous.')}
+if(!response.ok){
+if(response.status===401||response.status===403)throw new Error('Accès refusé : vérifiez le PAT, la permission trade et le nouvel App ID.');
+throw new Error(`Requête Deriv refusée (HTTP ${response.status}). Réessayez ultérieurement.`)
+}
+const data=await response.json();
+if(!accessAllowed||revision!==accessRevision)throw new Error('Session KonbitTrade fermée.');
+return data
+}
+function resetAccounts(){
+accounts=[];$('account').replaceChildren(new Option('Chargez vos comptes',''));$('account').disabled=true;$('bc').textContent='Charger les comptes'
+}
+['token','appid'].forEach(field=>$(field).addEventListener('input',resetAccounts));
+function connectionControls(busy){
+['token','appid'].forEach(field=>$(field).disabled=busy||connected);
+$('account').disabled=busy||connected||!accounts.length;$('bc').disabled=busy||contractActive;
+$('bc').textContent=connected?'Déconnecter':accounts.length?'Connecter':'Charger les comptes'
+}
+function disconnect(){
+connected=false;clearInterval(heartbeat);
+if(run)end('Connexion interrompue : arrêt des achats.');
+if(contractActive)log('Vérifiez le contrat en cours dans Deriv avant de redémarrer.','l');
+contractActive=false;
+for(const request of pending.values()){clearTimeout(request.timeout);request.reject(new Error('Connexion Deriv fermée.'))}pending.clear();
+$('acc').textContent='(déconnecté)';connectionControls(false)
+}
+function openSocket(url){return new Promise((resolve,reject)=>{
+if(!accessAllowed)return reject(new Error('Connectez-vous à votre compte KonbitTrade.'));
+const socket=new WebSocket(url);ws=socket;
+const timeout=setTimeout(()=>{socket.close();reject(new Error('Connexion WebSocket expirée. Rechargez une nouvelle connexion.'))},15000);
+socket.onopen=()=>{clearTimeout(timeout);resolve()};
+socket.onerror=()=>{clearTimeout(timeout);reject(new Error('Connexion WebSocket Deriv impossible.'));socket.close()};
+socket.onclose=()=>{clearTimeout(timeout);if(ws===socket)disconnect();reject(new Error('Connexion WebSocket Deriv fermée.'))};
+socket.onmessage=message=>{
+let data;try{data=JSON.parse(message.data)}catch{return}
+const request=pending.get(data.req_id);
+if(request){clearTimeout(request.timeout);pending.delete(data.req_id);request.resolve(data)}
+if(data.balance&&connected){cur=data.balance.currency;$('acc').textContent=`${$('account').value} · ${data.balance.balance} ${cur}`}
+}
+})}
+$('bc').onclick=async()=>{
+if(!accessAllowed)return;
+if(connected){ws.close();disconnect();return}
+if(!$('token').value.trim()||!$('appid').value.trim())return log('Renseignez votre PAT et le nouvel App ID.','l');
+connectionControls(true);
+try{
+if(!accounts.length){
+const response=await rest('/accounts');
+accounts=(Array.isArray(response.data)?response.data:[]).filter(account=>account.status==='active');
+$('account').replaceChildren(new Option('Choisissez un compte',''));
+accounts.forEach(account=>$('account').add(new Option(`${account.account_type==='demo'?'Démo':'Réel'} · ${account.account_id} · ${account.balance} ${account.currency}`,account.account_id)));
+if(!accounts.length)throw new Error('Aucun compte Options actif disponible pour ce PAT.');
+log('Comptes chargés. Sélectionnez le compte à connecter.','w');return
+}
+const account=accounts.find(account=>account.account_id===$('account').value);
+if(!account)throw new Error('Sélectionnez un compte démo ou réel avant de connecter.');
+const response=await rest(`/accounts/${encodeURIComponent(account.account_id)}/otp`,'POST');
+const url=new URL(response.data?.url);
+if(url.protocol!=='wss:'||url.hostname!=='api.derivws.com'||!['/trading/v1/options/ws/demo','/trading/v1/options/ws/real'].includes(url.pathname)||url.username||url.password)throw new Error('Adresse WebSocket Deriv inattendue.');
+await openSocket(url.href);
+const balance=await send({balance:1,subscribe:1});
+if(balance.error||!balance.balance)throw new Error('Lecture du solde impossible. Vérifiez les permissions du PAT.');
+cur=balance.balance.currency;connected=true;
+$('acc').textContent=`${account.account_type==='demo'?'Démo':'Réel'} · ${account.account_id} · ${balance.balance.balance} ${cur}`;
+heartbeat=setInterval(()=>send({ping:1}).catch(()=>{ws.close();disconnect()}),30000);
+log('Connecté au nouveau WebSocket Deriv via PAT.','w')
+}catch(error){if(ws&&ws.readyState!==WebSocket.CLOSED)ws.close();log(error.name==='TimeoutError'?'Délai de réponse Deriv dépassé.':error instanceof TypeError?'Connexion à Deriv impossible. Vérifiez votre réseau et vos identifiants.':error.message,'l')}
+finally{connectionControls(false)}
+};
+const g=i=>+$(i).value;
+$('go').onclick=()=>{if(!accessAllowed)return;if(!connected||!ws||ws.readyState!==WebSocket.OPEN)return log('Connectez-vous d\'abord','l');
+if(contractActive)return log('Un contrat est encore en cours. Attendez son résultat.','l');
+S={n:0,pl:0,loss:0,stake:g('stake0'),fired:[]};$('go').disabled=true;run=true;log('Good Luck Champions 🏆','w');trade()};
+$('stop').onclick=()=>end('Arrêt manuel');
+function end(m){run=false;$('go').disabled=false;log(m,'l')}
+function ui(){$('sS').textContent=S.n;$('sP').textContent=S.pl.toFixed(2);$('sL').textContent=S.loss;$('sK').textContent=S.stake}
+async function trade(){if(!run||!accessAllowed)return;const socket=ws;let b;
+if(S.loss>=4)b=g('b3');else if(S.loss>=2)b=g('b2');else if(S.loss>=1)b=g('b1');else b=g('b0');
+if($('dir').value=='DIGITOVER')b=9-b;
+log(`Achat ${$('dir').selectedOptions[0].text} ${b} · stake ${S.stake}`);
+contractActive=true;$('bc').disabled=true;
+try{
+const p=await send({buy:'1',price:S.stake,parameters:{amount:S.stake,basis:'stake',contract_type:$('dir').value,currency:cur,duration:1,duration_unit:'t',underlying_symbol:$('symbol').value,barrier:String(b)}});
+if(p.error)throw new Error(p.error.message);
+const cid=p.buy.contract_id;let done=false;
+const handleContract=data=>{
+const contract=data.proposal_open_contract;
+if(!contract||contract.contract_id!=cid||!contract.is_sold||done)return;
+done=true;socket.removeEventListener('message',handleMessage);contractActive=false;connectionControls(false);
+const subscription=data.subscription?.id||contract.id;
+if(subscription)send({forget:subscription}).catch(()=>{});
+result(+contract.profit)
+};
+const handleMessage=message=>{let data;try{data=JSON.parse(message.data)}catch{return}handleContract(data)};
+socket.addEventListener('message',handleMessage);
+socket.addEventListener('close',()=>socket.removeEventListener('message',handleMessage),{once:true});
+try{
+const subscription=await send({proposal_open_contract:1,contract_id:cid,subscribe:1});
+if(subscription.error)throw new Error(subscription.error.message);
+handleContract(subscription)
+}catch(error){socket.removeEventListener('message',handleMessage);throw error}
+}catch(error){contractActive=false;connectionControls(false);end(error.message);log('Vérifiez vos contrats dans Deriv avant de redémarrer.','l')}
+}
+function result(p){S.n++;S.pl+=p;
+if(p>0){S.stake=g('winStake');S.loss=0;log(`WIN +${p}`,'w')}else{S.loss++;S.stake=+(Math.abs(p)*g('mult')).toFixed(2);log(`LOSS ${p}`,'l')}
+rules.forEach((r,i)=>{if(S.fired[i]||S.n<r.n||!(r.op=='≥'?S.pl>=r.x:S.pl<=r.x))return;S.fired[i]=1;
+log(`Règle ${i+1}: ${r.a} → ${r.y}`);if(r.a=='stop')return S.stop=1;
+if(r.a=='stake0'){S.stake=r.y}$(r.a).value=r.y;sv()});
+ui();
+if(S.stop)return end('Règle stop');
+if(S.pl<0&&Math.abs(S.pl)>=g('sl'))return end('Stop Loss atteint !!! '+S.pl.toFixed(2));
+if(S.pl>=g('tp'))return end('Take Profit atteint 🎉 '+S.pl.toFixed(2));
+if(S.n>=g('runs'))return end('Sessions max atteintes');
+setTimeout(trade,400)}
+const defaultSettings=Object.fromEntries(F.map(field=>[field,$(field).value]));
+window.konbittrade={
+authorize:async()=>false,
+setAccess:allowed=>{const wasAllowed=accessAllowed;if(wasAllowed!==allowed)accessRevision++;accessAllowed=allowed;$('trading-panel').hidden=!allowed;$('trading-panel').disabled=!allowed;if(wasAllowed&&!allowed)window.konbittrade.reset()},
+snapshot:()=>({settings:Object.fromEntries(F.map(field=>[field,$(field).value])),rules:rules.map(rule=>({...rule}))}),
+busy:()=>run||contractActive,
+apply:preferences=>{for(const field of F)$(field).value=String(preferences.settings[field]??defaultSettings[field]);rules=preferences.rules.map(rule=>({...rule}));drawR();resetAccounts()},
+reset:()=>{const hadActiveContract=contractActive;if(run)end('Session KonbitTrade fermée : arrêt des achats.');if(ws){ws.close();ws=undefined}disconnect();$('token').value='';for(const field of F)$(field).value=defaultSettings[field];rules=[];drawR();resetAccounts();S={n:0,pl:0,loss:0,stake:+defaultSettings.stake0,fired:[]};ui();$('log').replaceChildren();if(hadActiveContract)log('Un contrat était en cours : vérifiez son résultat dans Deriv.','l')}
+};
+if('serviceWorker'in navigator)navigator.serviceWorker.register('/sw.js').catch(()=>{});
+</script></body></html>
